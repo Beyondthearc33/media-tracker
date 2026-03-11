@@ -21,6 +21,11 @@ app.get("/", (req, res) => {
   res.send("Media Tracker API is running");
 });
 
+// Health Endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", service: "media-tracker" });
+});
+
 // Server configuration
 const PORT = process.env.PORT || 3000;
 
@@ -31,7 +36,7 @@ async function startServer() {
     console.log("[server] MongoDB connection verified");
 
     app.listen(PORT, () => {
-      console.log(`[server] Server is running on http://localhost:${PORT}`);
+      console.log(`[server] Server running on ${PORT}`);
     });
   } catch (error) {
     console.error(
