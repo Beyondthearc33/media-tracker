@@ -15,6 +15,7 @@ const app = express();
 
 // Import API routes
 const mediaRoutes = require('./routes/mediaRoutes');
+const libraryRoutes = require('./routes/libraryRoutes');
 
 // Global middleware
 app.use(express.json());
@@ -31,6 +32,7 @@ app.get("/health", (req, res) => {
 
 // Routes
 app.use('/api/media', mediaRoutes);
+app.use('/api/library', libraryRoutes);
 
 // Server configuration
 const PORT = process.env.PORT || 3000;
