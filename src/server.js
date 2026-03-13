@@ -10,21 +10,27 @@ const express = require("express");
 // Database connection
 const { connectToDatabase } = require("./db/connect");
 
-// App creation
+// Create Express application
 const app = express();
+
+// Import API routes
+const mediaRoutes = require('./routes/mediaRoutes');
 
 // Global middleware
 app.use(express.json());
 
-// Routes
+// Root route (basic test endpoint)
 app.get("/", (req, res) => {
   res.send("Media Tracker API is running");
 });
 
-// Health Endpoint
+// Health check endpoint
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", service: "media-tracker" });
 });
+
+// Routes
+app.use('/api/media', mediaRoutes);
 
 // Server configuration
 const PORT = process.env.PORT || 3000;
