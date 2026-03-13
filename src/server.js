@@ -3,12 +3,12 @@
  * ************************** */
 
 // Load environment variables
-require("dotenv").config();
+require('dotenv').config();
 
-const express = require("express");
+const express = require('express');
 
 // Database connection
-const { connectToDatabase } = require("./db/connect");
+const { connectToDatabase } = require('./db/connect');
 
 // Create Express application
 const app = express();
@@ -23,13 +23,13 @@ const collectionsRoutes = require('./routes/collectionsRoutes');
 app.use(express.json());
 
 // Root route (basic test endpoint)
-app.get("/", (req, res) => {
-  res.send("Media Tracker API is running");
+app.get('/', (req, res) => {
+  res.send('Media Tracker API is running');
 });
 
 // Health check endpoint
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok", service: "media-tracker" });
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'media-tracker' });
 });
 
 // Routes
@@ -45,15 +45,13 @@ const PORT = process.env.PORT || 3000;
 async function startServer() {
   try {
     await connectToDatabase();
-    console.log("[server] MongoDB connection verified");
+    console.log('[server] MongoDB connection verified');
 
     app.listen(PORT, () => {
       console.log(`[server] Server running on ${PORT}`);
     });
   } catch (error) {
-    console.error(
-      "[server] Failed to start server because MongoDB connection failed:"
-    );
+    console.error('[server] Failed to start server because MongoDB connection failed:');
     console.error(error);
     process.exit(1);
   }
