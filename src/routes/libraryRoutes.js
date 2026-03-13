@@ -1,5 +1,5 @@
 /* ***************************
- *  routes/libraryRoute.js
+ *  routes/libraryRoutes.js
  * No validation yet
  * No middleware yet
  * No Swagger comments yet

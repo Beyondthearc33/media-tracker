@@ -1,5 +1,5 @@
 /* ***************************
- *  routes/mediaRoute.js
+ *  routes/mediaRoutes.js
  * No validation yet
  * No middleware yet
  * No Swagger comments yet
