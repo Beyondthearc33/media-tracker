@@ -61,10 +61,10 @@ exports.updateLibraryItem = async (req, res) => {
         const updatedItem = await LibraryItem.findByIdAndUpdate(
             req.params.id,
             req.body,
-            { new: true, runValidators: true }
+            { new: true }
         );
 
-        if (!updateItem) {
+        if (!updatedItem) {
             return res.status(404).json({ message: 'Library item not found' });
         }
 
