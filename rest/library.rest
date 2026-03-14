@@ -1,0 +1,31 @@
+### Returns the user's media list
+GET http://localhost:3000/api/library
+
+
+### Returns a specific tracked item
+GET http://localhost:3000/api/library/65f3e3c0f1a4c1a22d9c5678
+
+
+### Adds a media item to the user's library
+POST http://localhost:3000/api/library
+Content-Type: application/json
+
+{
+  "userId": "65f3e3c0f1a4c1a22d9c5679",
+  "mediaId": "65f3e3c0f1a4c1a22d9c5678",
+  "status": "watching",
+  "rating": 5
+}
+
+
+### Update status, progress, rating, or notes.
+PUT http://localhost:3000/api/library/65f3e3c0f1a4c1a22d9c5678
+Content-Type: application/json
+
+{
+  "status": "completed",
+  "rating": 5
+}
+
+### Removes an item from the user's library
+DELETE http://localhost:3000/api/library/65f3e3c0f1a4c1a22d9c5678
