@@ -1,34 +1,34 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const mediaSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     type: {
       type: String,
       required: true,
-      enum: ["Movie", "TV Show"]
+      enum: ['Movie', 'TV Show'],
     },
     releaseYear: {
-      type: Number
+      type: Number,
     },
     duration: {
-      type: Number
+      type: Number,
     },
     genre: {
-      type: String
+      type: String,
     },
     director: {
-      type: String
+      type: String,
     },
     cast: {
       type: [String],
-      default: []
-    }
+      default: [],
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-module.exports = mongoose.model("Media", mediaSchema);
+module.exports = mongoose.model('Media', mediaSchema);

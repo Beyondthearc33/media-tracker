@@ -6,21 +6,28 @@
 require('dotenv').config();
 
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
 
-// Database connection
 const { connectToDatabase } = require('./db/connect');
+const swaggerSpec = require('./swagger');
 
 // Create Express application
 const app = express();
 
+// Server configuration
+const PORT = process.env.PORT || 3000;
+
 // Import API routes
-const authRoutes = require('./routes/authRoutes');
-const mediaRoutes = require('./routes/mediaRoutes');
-const libraryRoutes = require('./routes/libraryRoutes');
-const collectionsRoutes = require('./routes/collectionsRoutes');
+// const authRoutes = require('./routes/authRoutes');
+// const mediaRoutes = require('./routes/mediaRoutes');
+// const libraryRoutes = require('./routes/libraryRoutes');
+// const collectionsRoutes = require('./routes/collectionsRoutes');
 
 // Global middleware
 app.use(express.json());
+
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Root route (basic test endpoint)
 app.get('/', (req, res) => {
@@ -28,18 +35,36 @@ app.get('/', (req, res) => {
 });
 
 // Health check endpoint
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Check API health status
+ *     description: Returns the status of the API server
+ *     responses:
+ *       200:
+ *         description: API is running
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 service:
+ *                   type: string
+ *                   example: media-tracker
+ */
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'media-tracker' });
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/media', mediaRoutes);
-app.use('/api/library', libraryRoutes);
-app.use('/api/collections', collectionsRoutes);
-
-// Server configuration
-const PORT = process.env.PORT || 3000;
+// app.use('/api/auth', authRoutes);
+// app.use('/api/media', mediaRoutes);
+// app.use('/api/library', libraryRoutes);
+// app.use('/api/collections', collectionsRoutes);
 
 // Start the server after DB check
 async function startServer() {
