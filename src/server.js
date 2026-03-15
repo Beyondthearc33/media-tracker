@@ -6,12 +6,16 @@
 require('dotenv').config();
 
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
 
-// Database connection
 const { connectToDatabase } = require('./db/connect');
+const swaggerSpec = require('./swagger');
 
 // Create Express application
 const app = express();
+
+// Server configuration
+const PORT = process.env.PORT || 3000;
 
 // Import API routes
 // const authRoutes = require('./routes/authRoutes');
@@ -21,6 +25,9 @@ const app = express();
 
 // Global middleware
 app.use(express.json());
+
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Root route (basic test endpoint)
 app.get('/', (req, res) => {
@@ -37,9 +44,6 @@ app.get('/health', (req, res) => {
 // app.use('/api/media', mediaRoutes);
 // app.use('/api/library', libraryRoutes);
 // app.use('/api/collections', collectionsRoutes);
-
-// Server configuration
-const PORT = process.env.PORT || 3000;
 
 // Start the server after DB check
 async function startServer() {
