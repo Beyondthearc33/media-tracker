@@ -1,0 +1,43 @@
+### Get all collections
+GET http://localhost:3000/api/collections
+
+
+### Get collection by ID
+GET http://localhost:3000/api/collections/65f3e3c0f1a4c1a22d9c5678
+
+
+### Create collection
+POST http://localhost:3000/api/collections
+Content-Type: application/json
+
+{
+  "userId": "65f3e3c0f1a4c1a22d9c5679",
+  "name": "Favorite Movies",
+  "description": "My top movie picks"
+}
+
+
+### Update collection
+PUT http://localhost:3000/api/collections/65f3e3c0f1a4c1a22d9c5678
+Content-Type: application/json
+
+{
+  "name": "Updated Favorites"
+}
+
+
+### Delete collection
+DELETE http://localhost:3000/api/collections/65f3e3c0f1a4c1a22d9c5678
+
+
+### Add item to collection
+POST http://localhost:3000/api/collections/65f3e3c0f1a4c1a22d9c5678/items
+Content-Type: application/json
+
+{
+  "mediaId": "65f3e3c0f1a4c1a22d9c5677"
+}
+
+
+### Remove item from collection
+DELETE http://localhost:3000/api/collections/65f3e3c0f1a4c1a22d9c5678/items/65f3e3c0f1a4c1a22d9c5677
