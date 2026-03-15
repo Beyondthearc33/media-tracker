@@ -14,10 +14,10 @@ const { connectToDatabase } = require('./db/connect');
 const app = express();
 
 // Import API routes
-const authRoutes = require('./routes/authRoutes');
-const mediaRoutes = require('./routes/mediaRoutes');
-const libraryRoutes = require('./routes/libraryRoutes');
-const collectionsRoutes = require('./routes/collectionsRoutes');
+// const authRoutes = require('./routes/authRoutes');
+// const mediaRoutes = require('./routes/mediaRoutes');
+// const libraryRoutes = require('./routes/libraryRoutes');
+// const collectionsRoutes = require('./routes/collectionsRoutes');
 
 // Global middleware
 app.use(express.json());
@@ -33,10 +33,10 @@ app.get('/health', (req, res) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/media', mediaRoutes);
-app.use('/api/library', libraryRoutes);
-app.use('/api/collections', collectionsRoutes);
+// app.use('/api/auth', authRoutes);
+// app.use('/api/media', mediaRoutes);
+// app.use('/api/library', libraryRoutes);
+// app.use('/api/collections', collectionsRoutes);
 
 // Server configuration
 const PORT = process.env.PORT || 3000;
