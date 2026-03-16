@@ -5,29 +5,28 @@
 const mongoose = require('mongoose');
 
 // User Schema
-const userSchema = new mongoose.Schema
-(
+const userSchema = new mongoose.Schema(
   {
     githubId: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     username: {
       type: String,
-      required: true
+      required: true,
     },
     name: {
-      type: String
+      type: String,
     },
     email: {
-      type: String
+      type: String,
     },
     avatarUrl: {
-      type: String
+      type: String,
     },
-    {timestamps: true}
-  }
+  },
+  { timestamps: true },
 );
 
 module.exports = mongoose.model('User', userSchema);
