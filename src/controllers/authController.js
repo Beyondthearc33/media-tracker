@@ -37,18 +37,30 @@ const getCurrentUser = (req, res) => {
 
 // Logs out the current user and destroys the session
 const logout = (req, res, next) => {
+  // Passport logout (removes req.user)
   req.logout((error) => {
     if (error) {
       return next(error);
     }
 
+    if (!req.session) {
+      return res.status(200).json({
+        message: 'Logged out successfully (no active session)',
+      });
+    }
+
+    // Destroy session on server
     req.session.destroy((sessionError) => {
       if (sessionError) {
         return next(sessionError);
       }
 
-      res.clearCookie('connect.sid');
-      res.status(200).json({
+    // Clear session cookie from brwoser
+    res.clearCookie('connect.sid', {
+        path: '/',
+      });
+
+      return res.status(200).json({
         message: 'Logged out successfully',
       });
     });
