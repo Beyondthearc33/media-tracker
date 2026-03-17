@@ -1,17 +1,9 @@
 /* ***************************
  *  db/connect.js
  * ************************** */
-const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 
-let db;
-
-// Connect to MongoDB
 async function connectToDatabase() {
-  if (db) {
-    return db;
-  }
-
-  // Environment Variable
   const uri = process.env.MONGODB_URI;
   const dbName = process.env.DB_NAME;
 
@@ -23,13 +15,11 @@ async function connectToDatabase() {
     throw new Error('[db/connect] DB_NAME is not defined in .env');
   }
 
-  const client = new MongoClient(uri);
-  await client.connect();
+  await mongoose.connect(uri, {
+    dbName,
+  });
 
-  db = client.db(dbName);
   console.log(`[db/connect] Connected to MongoDB database: ${dbName}`);
-
-  return db;
 }
 
 module.exports = {
