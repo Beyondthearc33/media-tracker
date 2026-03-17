@@ -40,7 +40,7 @@ passport.use(
                 ? profile.emails[0].value
                 : null,
 
-            avatarURL:
+            avatarUrl:
               profile.photos && profile.photos.length > 0
                 ? profile.photos[0].value
                 : null,
