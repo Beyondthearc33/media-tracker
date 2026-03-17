@@ -10,13 +10,13 @@ const router = express.Router();
 
 const authController = require('../controllers/authController');
 
-// GET /auth/login
+// GET /auth/github
 // Redirects the user to GitHub/Google login using OAuth
-router.get('/login', authController.login);
+router.get('/github', authController.login);
 
-// GET /auth/callback
+// GET /auth/github/callback
 // GitHub redirects the user to this endpoint after authentication
-router.get('/callback', authController.callback);
+router.get('/github/callback', authController.callback);
 
 // GET /auth/me
 // Returns the currently authenticated user's information

@@ -6,8 +6,11 @@
 require('dotenv').config();
 
 const express = require('express');
+
+// Sessions + Auth
 const session = require('express-session');
 const passport = require('passport');
+
 const swaggerUi = require('swagger-ui-express');
 
 const { connectToDatabase } = require('./db/connect');
@@ -84,7 +87,7 @@ app.get('/health', (req, res) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 // app.use('/api/media', mediaRoutes);
 // app.use('/api/library', libraryRoutes);
 // app.use('/api/collections', collectionsRoutes);
