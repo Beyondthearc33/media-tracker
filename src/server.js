@@ -16,6 +16,9 @@ const swaggerUi = require('swagger-ui-express');
 const { connectToDatabase } = require('./db/connect');
 const swaggerSpec = require('./swagger');
 
+// Load Passport configuration
+require('./config/passport');
+
 // Import API routes
 const authRoutes = require('./routes/authRoutes');
 // const mediaRoutes = require('./routes/mediaRoutes');
@@ -30,6 +33,8 @@ const PORT = process.env.PORT || 3000;
 
 // Global middleware
 app.use(express.json());
+// Parse form-urlencoded data
+app.use(express.urlencoded({ extended: true }));
 
 // Session middleware
 app.use(
@@ -45,10 +50,7 @@ app.use(
   }),
 );
 
-/**
- * Initialize Passportok
- * passport.session() allows persistent login sessions
- */
+// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -86,14 +88,14 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'media-tracker' });
 });
 
-// Routes
+// API Routes
 app.use('/auth', authRoutes);
 // app.use('/api/media', mediaRoutes);
 // app.use('/api/library', libraryRoutes);
 // app.use('/api/collections', collectionsRoutes);
 
 // Simple error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error('[server] Error:', err.message);
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',

@@ -55,8 +55,8 @@ const logout = (req, res, next) => {
         return next(sessionError);
       }
 
-    // Clear session cookie from brwoser
-    res.clearCookie('connect.sid', {
+      // Clear session cookie from brwoser
+      res.clearCookie('connect.sid', {
         path: '/',
       });
 
