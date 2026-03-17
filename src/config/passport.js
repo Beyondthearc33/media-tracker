@@ -5,6 +5,14 @@ const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const User = require('../models/user');
 
+if (
+  !process.env.GITHUB_CLIENT_ID ||
+  !process.env.GITHUB_CLIENT_SECRET ||
+  !process.env.GITHUB_CALLBACK_URL
+) {
+  throw new Error('Missing GitHub OAuth environment variables');
+}
+
 // Register the GitHub OAuth strategy
 passport.use(
   new GitHubStrategy(
