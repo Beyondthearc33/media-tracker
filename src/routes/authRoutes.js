@@ -22,12 +22,12 @@ const authController = require('../controllers/authController');
  * @swagger
  * /auth/github:
  *   get:
- *     summary: Start GitHub OAuth login
+ *     summary: Redirect user to GitHub for authentication
  *     tags: [Auth]
- *     description: Redirects the user to GitHub to authenticate.
+ *     description: Initiates OAuth login flow. Redirects user to GitHub.
  *     responses:
  *       302:
- *         description: Redirect to GitHub OAuth login page
+ *         description: Redirect to GitHub OAuth
  */
 router.get('/github', authController.login);
 
@@ -38,22 +38,10 @@ router.get('/github', authController.login);
  *   get:
  *     summary: GitHub OAuth callback
  *     tags: [Auth]
- *     description: Handles the callback from GitHub after authentication.
+ *     description: Handles GitHub response after authentication and creates a session.
  *     responses:
- *       200:
- *         description: Authentication successful
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Authentication successful
- *                 user:
- *                   type: object
  *       302:
- *         description: Redirect on auth failure
+ *         description: Redirect after successful authentication
  *       401:
  *         description: Authentication failed
  */
