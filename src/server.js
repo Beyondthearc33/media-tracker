@@ -19,6 +19,10 @@ const mediaRoutes = require('./routes/mediaRoutes');
 const libraryRoutes = require('./routes/libraryRoutes');
 const collectionsRoutes = require('./routes/collectionsRoutes');
 
+// Swagger dependencies
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./src/swagger.json');
+
 // Global middleware
 app.use(express.json());
 
@@ -37,6 +41,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/library', libraryRoutes);
 app.use('/api/collections', collectionsRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Server configuration
 const PORT = process.env.PORT || 3000;
