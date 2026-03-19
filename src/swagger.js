@@ -2,28 +2,37 @@ const swaggerAutogen = require('swagger-autogen')();
 
 const doc = {
   info: {
-    version: '',            // by default: '1.0.0'
-    title: '',              // by default: 'REST API'
-    description: ''         // by default: ''
+    version: '',
+    title: 'Media Tracker API',
+    description: 'Media tracker will allow users to create a backlog/watchlist of movies/shows they watch. They can track status, rate them, create notes and mark when watched.'         // by default: ''
   },
-  host: '',                 // by default: 'localhost:3000'
-  basePath: '',             // by default: '/'
-  schemes: [],              // by default: ['http']
-  consumes: [],             // by default: ['application/json']
-  produces: [],             // by default: ['application/json']
-  tags: [                   // by default: empty Array
+  host: 'localhost:3000',
+  basePath: '/',
+  schemes: ['http'],
+  consumes: ['application/json'],
+  produces: ['application/json'],
+  tags: [                  
     {
-      name: '',             // Tag name
-      description: ''       // Tag description
+      name: 'Auth',            
+      description: 'Authentication endpoints'       
     },
-    // { ... }
-  ],
-  securityDefinitions: {},  // by default: empty object
-  definitions: {}           // by default: empty object
+    {
+        name: 'Media',
+        description: 'Media management'
+    },
+    {
+        name: 'Library',
+        description: 'User media tracking'
+    },
+    {
+        name: 'Collections',
+        description: 'User collections'
+    }
+  ]
 };
 
-const outputFile = './swagger-output.json';
-const routes = ['./path/userRoutes.js', './path/bookRoutes.js'];
+const outputFile = './src/swagger.json';
+const routes = ['./src/routes/index.js'];
 
 /* NOTE: If you are using the express Router, you must pass in the 'routes' only the 
 root file where the route starts, such as index.js, app.js, routes.js, etc ... */
