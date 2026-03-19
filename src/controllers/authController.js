@@ -10,13 +10,21 @@ const login = passport.authenticate('github', { scope: ['user:email'] });
 // Handles the OAuth callback from GitHub
 const callback = [
   passport.authenticate('github', {
-    failureRedirect: '/login-failed',
     session: true,
+    failWithError: true,
   }),
   (req, res) => {
+    // Success
     res.status(200).json({
       message: 'Authentication successful',
       user: req.user,
+    });
+  },
+  (err, req, res, _next) => {
+    // Failure
+    return res.status(401).json({
+      message: 'Authentication failed',
+      error: err?.message || 'Unauthorized',
     });
   },
 ];
@@ -35,7 +43,7 @@ const getCurrentUser = (req, res) => {
   });
 };
 
-// Logs out the current user and destroys the session
+// Logout user and destroy session
 const logout = (req, res, next) => {
   // Passport logout (removes req.user)
   req.logout((error) => {
