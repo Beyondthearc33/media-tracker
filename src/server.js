@@ -31,6 +31,10 @@ const app = express();
 // Server configuration
 const PORT = process.env.PORT || 3000;
 
+// Import middleware
+const notFound = require('./middleware/notFound');
+const errorHandler = require('./middleware/errorHandler');
+
 // Global middleware
 app.use(express.json());
 // Parse form-urlencoded data
@@ -94,13 +98,14 @@ app.use('/auth', authRoutes);
 // app.use('/api/library', libraryRoutes);
 // app.use('/api/collections', collectionsRoutes);
 
-// Simple error handler
-app.use((err, req, res, _next) => {
-  console.error('[server] Error:', err.message);
-  res.status(err.status || 500).json({
-    message: err.message || 'Internal Server Error',
-  });
-});
+// 404 handler - must come after routes
+app.use(notFound);
+
+// Global error handler - must come last
+app.use(errorHandler);
+
+// Server configuration
+const PORT = process.env.PORT || 3000;
 
 // Start the server after DB check
 async function startServer() {
