@@ -25,19 +25,18 @@ const authRoutes = require('./routes/authRoutes');
 // const libraryRoutes = require('./routes/libraryRoutes');
 // const collectionsRoutes = require('./routes/collectionsRoutes');
 
+// Import middleware
+const notFound = require('./middleware/notFound');
+const errorHandler = require('./middleware/errorHandler');
+
 // Create Express application
 const app = express();
 
 // Server configuration
 const PORT = process.env.PORT || 3000;
 
-// Import middleware
-const notFound = require('./middleware/notFound');
-const errorHandler = require('./middleware/errorHandler');
-
 // Global middleware
 app.use(express.json());
-// Parse form-urlencoded data
 app.use(express.urlencoded({ extended: true }));
 
 // Session middleware
@@ -48,10 +47,10 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true only in production with HTTPS
-      maxAge: 60 * 60 * 1000, // 1 hour
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 1000,
     },
-  }),
+  })
 );
 
 // Passport middleware
@@ -61,51 +60,27 @@ app.use(passport.session());
 // Swagger API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Root route (basic test endpoint)
+// Root route
 app.get('/', (req, res) => {
   res.send('Media Tracker API is running');
 });
 
 // Health check endpoint
-/**
- * @swagger
- * /health:
- *   get:
- *     summary: Check API health status
- *     description: Returns the status of the API server
- *     responses:
- *       200:
- *         description: API is running
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: ok
- *                 service:
- *                   type: string
- *                   example: media-tracker
- */
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'media-tracker' });
 });
 
 // API Routes
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 // app.use('/api/media', mediaRoutes);
 // app.use('/api/library', libraryRoutes);
 // app.use('/api/collections', collectionsRoutes);
 
-// 404 handler - must come after routes
+// 404 handler 
 app.use(notFound);
 
-// Global error handler - must come last
+// Global error handler 
 app.use(errorHandler);
-
-// Server configuration
-const PORT = process.env.PORT || 3000;
 
 // Start the server after DB check
 async function startServer() {
