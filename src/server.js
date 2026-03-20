@@ -19,6 +19,10 @@ const mediaRoutes = require('./routes/mediaRoutes');
 const libraryRoutes = require('./routes/libraryRoutes');
 const collectionsRoutes = require('./routes/collectionsRoutes');
 
+// Import middleware
+const notFound = require('./middleware/notFound');
+const errorHandler = require('./middleware/errorHandler');
+
 // Global middleware
 app.use(express.json());
 
@@ -37,6 +41,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/library', libraryRoutes);
 app.use('/api/collections', collectionsRoutes);
+
+// 404 handler - must come after routes
+app.use(notFound);
+
+// Global error handler - must come last
+app.use(errorHandler);
 
 // Server configuration
 const PORT = process.env.PORT || 3000;
