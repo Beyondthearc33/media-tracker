@@ -21,7 +21,7 @@ require('./config/passport');
 
 // Import API routes
 const authRoutes = require('./routes/authRoutes');
-// const mediaRoutes = require('./routes/mediaRoutes');
+const mediaRoutes = require('./routes/mediaRoutes');
 // const libraryRoutes = require('./routes/libraryRoutes');
 // const collectionsRoutes = require('./routes/collectionsRoutes');
 
@@ -50,7 +50,7 @@ app.use(
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 1000,
     },
-  })
+  }),
 );
 
 // Passport middleware
@@ -72,14 +72,14 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/media', mediaRoutes);
+app.use('/api/media', mediaRoutes);
 // app.use('/api/library', libraryRoutes);
 // app.use('/api/collections', collectionsRoutes);
 
-// 404 handler 
+// 404 handler
 app.use(notFound);
 
-// Global error handler 
+// Global error handler
 app.use(errorHandler);
 
 // Start the server after DB check
