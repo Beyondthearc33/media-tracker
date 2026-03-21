@@ -1,9 +1,7 @@
 /* ***************************
- *  routes/authRoutes.js
- * No validation yet
- * No middleware yet
- * No Swagger comments yet
- * Only basic Express routing
+ * routes/authRoutes.js
+ * OAuth authentication routes
+ * Mounted in server.js at /api/auth
  * ************************** */
 const express = require('express');
 const router = express.Router();
@@ -17,10 +15,10 @@ const authController = require('../controllers/authController');
  *   description: OAuth authentication endpoints
  */
 
-// GET /auth/github
+// GET /api/auth/github
 /**
  * @swagger
- * /auth/github:
+ * /api/auth/github:
  *   get:
  *     summary: Redirect user to GitHub for authentication
  *     tags: [Auth]
@@ -31,10 +29,10 @@ const authController = require('../controllers/authController');
  */
 router.get('/github', authController.login);
 
-// GET /auth/github/callback
+// GET /api/auth/github/callback
 /**
  * @swagger
- * /auth/github/callback:
+ * /api/auth/github/callback::
  *   get:
  *     summary: GitHub OAuth callback
  *     tags: [Auth]
@@ -47,10 +45,10 @@ router.get('/github', authController.login);
  */
 router.get('/github/callback', authController.callback);
 
-// GET /auth/me
+// GET /api/auth/me
 /**
  * @swagger
- * /auth/me:
+ * /api/auth/me:
  *   get:
  *     summary: Get current authenticated user
  *     tags: [Auth]
@@ -81,10 +79,10 @@ router.get('/github/callback', authController.callback);
  */
 router.get('/me', authController.getCurrentUser);
 
-// POST /auth/logout
+// POST /api/auth/logout
 /**
  * @swagger
- * /auth/logout:
+ * /api/auth/logout:
  *   post:
  *     summary: Log out current user
  *     tags: [Auth]
