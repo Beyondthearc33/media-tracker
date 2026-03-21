@@ -11,32 +11,39 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 
+// Swagger UI
 const swaggerUi = require('swagger-ui-express');
 
+// Database + Swagger config
 const { connectToDatabase } = require('./db/connect');
 const swaggerSpec = require('./swagger');
 
-// Load Passport configuration
+// Load Passport strategy configuration
 require('./config/passport');
 
-// Import API routes
+// Import route files
 const authRoutes = require('./routes/authRoutes');
-// const mediaRoutes = require('./routes/mediaRoutes');
-// const libraryRoutes = require('./routes/libraryRoutes');
-// const collectionsRoutes = require('./routes/collectionsRoutes');
+const mediaRoutes = require('./routes/mediaRoutes');
+const libraryRoutes = require('./routes/libraryRoutes');
+const collectionsRoutes = require('./routes/collectionsRoutes');
 
 // Import middleware
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
-// Create Express application
+// Create the Express application
 const app = express();
 
-// Server configuration
+// Server port
 const PORT = process.env.PORT || 3000;
 
-// Global middleware
+/* -------------------------
+ * Global middleware
+ * ------------------------- */
+// Parse incoming JSON
 app.use(express.json());
+
+// Parse URL-encoded form data
 app.use(express.urlencoded({ extended: true }));
 
 // Session middleware
@@ -50,36 +57,40 @@ app.use(
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 1000,
     },
-  })
+  }),
 );
 
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Swagger API Documentation
+// Swagger docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Basic test routes
 // Root route
 app.get('/', (req, res) => {
   res.send('Media Tracker API is running');
 });
 
-// Health check endpoint
+// Health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', service: 'media-tracker' });
 });
 
-// API Routes
+/* -------------------------
+ * API routes
+ * -------------------------  */
 app.use('/api/auth', authRoutes);
-// app.use('/api/media', mediaRoutes);
-// app.use('/api/library', libraryRoutes);
-// app.use('/api/collections', collectionsRoutes);
+app.use('/api/media', mediaRoutes);
+app.use('/api/library', libraryRoutes);
+app.use('/api/collections', collectionsRoutes);
 
-// 404 handler 
+// Error Handling
+// 404 handler for unknown routes
 app.use(notFound);
 
-// Global error handler 
+// Global error handler
 app.use(errorHandler);
 
 // Start the server after DB check
