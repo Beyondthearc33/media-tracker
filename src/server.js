@@ -38,6 +38,26 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/library', libraryRoutes);
 app.use('/api/collections', collectionsRoutes);
 
+// Swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Media Tracker API',
+      version: '1.0.0',
+      description: 'API for tracking movies and TV shows'
+    }
+  },
+  apis: ['./src/routes/*.js'], // where your routes are
+};
+
+const swaggerSpec = swaggerJsdoc(options);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Server configuration
 const PORT = process.env.PORT || 3000;
 

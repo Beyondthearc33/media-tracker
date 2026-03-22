@@ -2,7 +2,6 @@
  *  routes/libraryRoutes.js
  * No validation yet
  * No middleware yet
- * No Swagger comments yet
  * Only basic Express routing
  * ************************** */
 const express = require('express');
@@ -10,20 +9,52 @@ const router = express.Router();
 
 const authController = require('../controllers/authController');
 
-// GET /auth/login
-// Redirects the user to GitHub/Google login using OAuth
+/**
+ * @swagger
+ * /api/auth/login:
+ *   get:
+ *     summary: Start OAuth login process
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Redirect to OAuth provider
+ */
 router.get('/login', authController.login);
 
-// GET /auth/callback
-// GitHub redirects the user to this endpoint after authentication
+/**
+ * @swagger
+ * /api/auth/callback:
+ *   get:
+ *     summary: OAuth callback handler
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: User authenticated
+ */
 router.get('/callback', authController.callback);
 
-// GET /auth/me
-// Returns the currently authenticated user's information
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get current authenticated user
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Current user info
+ */
 router.get('/me', authController.getCurrentUser);
 
-// POST /auth/logout
-// Logs out the currently authenticated user
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Log out current user
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ */
 router.post('/logout', authController.logout);
 
 module.exports = router;
