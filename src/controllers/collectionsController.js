@@ -38,7 +38,7 @@ exports.createCollection = async (req, res) => {
     const newCollection = new Collection(req.body);
     const savedCollection = await newCollection.save();
 
-    res.status(201).json(savedCollection); // Created
+    res.status(201).json(savedCollection);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -61,7 +61,7 @@ exports.updateCollection = async (req, res) => {
 
     res.status(200).json(updatedCollection);
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -76,7 +76,7 @@ exports.deleteCollection = async (req, res) => {
       return res.status(404).json({ message: 'Collection not found' });
     }
 
-    res.status(204).send(); // No Content
+    res.status(204).send(); // No content
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -84,6 +84,7 @@ exports.deleteCollection = async (req, res) => {
 
 /* ***************************
  * POST /api/collections/:id/items
+ * Add mediaId to collection
  * *************************** */
 exports.addItemToCollection = async (req, res) => {
   try {
@@ -95,7 +96,7 @@ exports.addItemToCollection = async (req, res) => {
 
     const updatedCollection = await Collection.findByIdAndUpdate(
       req.params.id,
-      { $addToSet: { mediaItems: mediaId } },
+      { $addToSet: { mediaIds: mediaId } }, // ✅ FIXED
       { new: true },
     );
 
@@ -111,12 +112,13 @@ exports.addItemToCollection = async (req, res) => {
 
 /* ***************************
  * DELETE /api/collections/:id/items/:mediaId
+ * Remove mediaId from collection
  * *************************** */
 exports.removeItemFromCollection = async (req, res) => {
   try {
     const updatedCollection = await Collection.findByIdAndUpdate(
       req.params.id,
-      { $pull: { mediaItems: req.params.mediaId } },
+      { $pull: { mediaIds: req.params.mediaId } }, // ✅ FIXED
       { new: true },
     );
 
