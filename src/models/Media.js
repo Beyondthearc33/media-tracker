@@ -13,7 +13,7 @@ const mediaSchema = new mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: ['movie', 'tv'], 
+      enum: ['movie', 'tv'],
     },
 
     releaseYear: {
@@ -38,26 +38,25 @@ const mediaSchema = new mongoose.Schema(
     },
 
     genre: {
-      type: [String], 
+      type: [String],
       default: [],
     },
 
     director: {
-      type: [String], 
+      type: [String],
       default: [],
     },
 
     cast: {
       type: [String], // Optional
       default: [],
-
     },
 
-  mpaRating: {
-    type: String,
-    enum: ['g', 'pg', 'pg-13', 'r', 'nc-17', 'tv-ma', 'tv-14'],
-    lowercase: true,
-  }
+    mpaRating: {
+      type: String,
+      enum: ['g', 'pg', 'pg-13', 'r', 'nc-17', 'tv-ma', 'tv-14'],
+      lowercase: true,
+    },
 
     description: {
       type: String,
@@ -66,7 +65,7 @@ const mediaSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // createdAt + updatedAt
-  }
+  },
 );
 
 module.exports = mongoose.model('Media', mediaSchema);
