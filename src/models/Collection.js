@@ -31,7 +31,7 @@ const collectionSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model('Collection', collectionSchema);

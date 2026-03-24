@@ -1,7 +1,6 @@
 /* ***************************
  *  routes/libraryRoutes.js
  * No validation yet
- * No Swagger comments yet
  * ************************** */
 const express = require('express');
 const router = express.Router();
