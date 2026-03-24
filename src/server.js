@@ -47,6 +47,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session middleware
+app.set('trust proxy', 1);
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -55,6 +56,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
       maxAge: 60 * 60 * 1000,
     },
   }),
