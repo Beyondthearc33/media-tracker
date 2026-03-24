@@ -33,8 +33,8 @@ const librarySchema = new Schema(
     },
   },
   {
-    timestamps: true, 
-  }
+    timestamps: true,
+  },
 );
 
 librarySchema.index({ userId: 1, mediaId: 1 }, { unique: true }); // implements duplicate prevention (userId + mediaId)
