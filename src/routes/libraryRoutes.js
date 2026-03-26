@@ -29,11 +29,13 @@ const requireAuth = require('../middleware/requireAuth');
  *         userId:
  *           type: string
  *           example: 69acc835d5e6123967dabaf6
+ *           description: The authenticated user who owns the library item
  *         mediaId:
  *           type: string
  *           example: 69acc532d5e6123967dabaf0
  *         status:
  *           type: string
+ *           enum: [watching, completed, plan_to_watch, dropped]
  *           example: completed
  *         userRating:
  *           type: number
@@ -95,6 +97,8 @@ router.get('/', requireAuth, libraryController.getAllLibraryItems);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/LibraryItem'
+ *       400:
+ *         description: Invalid library item id
  *       401:
  *         description: Unauthorized
  *       404:
@@ -109,22 +113,24 @@ router.get('/:id', requireAuth, libraryController.getLibraryItemById);
  * @swagger
  * /api/library:
  *   post:
- *     summary: Add a media item to library
+ *     summary: Add a media item to the authenticated user's library
  *     tags: [Library]
- *     description: Adds a media item to the user's library. Authentication required.
+ *     description: Creates a library item for the logged-in user. The userId is assigned automatically by the server.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - mediaId
  *             properties:
- *               userId:
- *                 type: string
  *               mediaId:
  *                 type: string
+ *                 example: 69acc532d5e6123967dabaf0
  *               status:
  *                 type: string
+ *                 enum: [watching, completed, plan_to_watch, dropped]
  *                 example: completed
  *               userRating:
  *                 type: number
@@ -140,7 +146,7 @@ router.get('/:id', requireAuth, libraryController.getLibraryItemById);
  *             schema:
  *               $ref: '#/components/schemas/LibraryItem'
  *       400:
- *         description: Duplicate entry (media already in library)
+ *         description: Invalid input or duplicate entry (media already exists in library)
  *       401:
  *         description: Unauthorized
  *       500:
@@ -153,9 +159,9 @@ router.post('/', requireAuth, libraryController.createLibraryItem);
  * @swagger
  * /api/library/{id}:
  *   put:
- *     summary: Update a library item
+ *     summary: Update one or more fields of a library item
  *     tags: [Library]
- *     description: Updates an existing library item. Authentication required.
+ *     description: Partially updates a library item only if it belongs to the logged-in user. The userId cannot be changed by the client.
  *     parameters:
  *       - in: path
  *         name: id
@@ -170,8 +176,12 @@ router.post('/', requireAuth, libraryController.createLibraryItem);
  *           schema:
  *             type: object
  *             properties:
+ *               mediaId:
+ *                 type: string
+ *                 example: 69acc532d5e6123967dabaf0
  *               status:
  *                 type: string
+ *                 enum: [watching, completed, plan_to_watch, dropped]
  *                 example: watching
  *               userRating:
  *                 type: number
@@ -186,6 +196,8 @@ router.post('/', requireAuth, libraryController.createLibraryItem);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/LibraryItem'
+ *       400:
+ *         description: Invalid library item id, invalid input, or duplicate entry
  *       401:
  *         description: Unauthorized
  *       404:
@@ -202,7 +214,7 @@ router.put('/:id', requireAuth, libraryController.updateLibraryItem);
  *   delete:
  *     summary: Delete a library item
  *     tags: [Library]
- *     description: Removes a media item from the user's library. Authentication required.
+ *     description: Removes a library item only if it belongs to the logged-in user.
  *     parameters:
  *       - in: path
  *         name: id
@@ -211,8 +223,10 @@ router.put('/:id', requireAuth, libraryController.updateLibraryItem);
  *         schema:
  *           type: string
  *     responses:
- *       204:
- *         description: Library item deleted successfully (no content)
+ *       200:
+ *         description: Library item deleted successfully
+ *       400:
+ *         description: Invalid library item id
  *       401:
  *         description: Unauthorized
  *       404:
