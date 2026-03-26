@@ -1,3 +1,7 @@
+/* ***************************
+ *  controllers/libraryController.js
+ * ************************** */
+const mongoose = require('mongoose');
 const LibraryItem = require('../models/LibraryItem');
 
 /* ***************************
@@ -5,7 +9,9 @@ const LibraryItem = require('../models/LibraryItem');
  * *************************** */
 exports.getAllLibraryItems = async (req, res) => {
   try {
-    const items = await LibraryItem.find();
+    const userId = req.user._id;
+    // Only return items owned by the authenticated user
+    const items = await LibraryItem.find({ userId });
 
     res.status(200).json(items);
   } catch (error) {
@@ -18,13 +24,21 @@ exports.getAllLibraryItems = async (req, res) => {
  * *************************** */
 exports.getLibraryItemById = async (req, res) => {
   try {
-    const library_item = await LibraryItem.findById(req.params.id);
+    const { id } = req.params;
+    const userId = req.user._id;
 
-    if (!library_item) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid library item id' });
+    }
+
+    // Find the item by BOTH _id and userId
+    const libraryItem = await LibraryItem.findOne({ _id: id, userId });
+
+    if (!libraryItem) {
       return res.status(404).json({ message: 'Library item not found' });
     }
 
-    res.status(200).json(library_item);
+    res.status(200).json(libraryItem);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -35,7 +49,12 @@ exports.getLibraryItemById = async (req, res) => {
  * *************************** */
 exports.createLibraryItem = async (req, res) => {
   try {
-    const newItem = new LibraryItem(req.body);
+    const userId = req.user._id;
+
+    const newItem = new LibraryItem({
+      ...req.body,
+      userId,
+    });
     const savedItem = await newItem.save();
 
     res.status(201).json(savedItem); // Created
@@ -56,9 +75,24 @@ exports.createLibraryItem = async (req, res) => {
  * *************************** */
 exports.updateLibraryItem = async (req, res) => {
   try {
-    const updatedItem = await LibraryItem.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid library item id' });
+    }
+
+    const updateData = { ...req.body };
+    delete updateData.userId;
+
+    const updatedItem = await LibraryItem.findOneAndUpdate(
+      { _id: id, userId },
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
 
     if (!updatedItem) {
       return res.status(404).json({ message: 'Library item not found' });
@@ -66,7 +100,13 @@ exports.updateLibraryItem = async (req, res) => {
 
     res.status(200).json(updatedItem);
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: 'Media already exists in library',
+      });
+    }
+
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -75,12 +115,20 @@ exports.updateLibraryItem = async (req, res) => {
  * *************************** */
 exports.deleteLibraryItem = async (req, res) => {
   try {
-    const deletedItem = await LibraryItem.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid library item id' });
+    }
+
+    const deletedItem = await LibraryItem.findOneAndDelete({ _id: id, userId });
 
     if (!deletedItem) {
       return res.status(404).json({ message: 'Library item not found' });
     }
 
+    res.status(200).json({ message: 'Collection deleted successfully' });
     res.status(204).send(); // No Content
   } catch (error) {
     res.status(500).json({ message: error.message });
