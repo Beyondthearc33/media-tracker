@@ -32,7 +32,7 @@ router.get('/github', authController.login);
 // GET /api/auth/github/callback
 /**
  * @swagger
- * /api/auth/github/callback::
+ * /api/auth/github/callback:
  *   get:
  *     summary: GitHub OAuth callback
  *     tags: [Auth]
