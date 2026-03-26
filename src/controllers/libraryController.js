@@ -128,6 +128,7 @@ exports.deleteLibraryItem = async (req, res) => {
       return res.status(404).json({ message: 'Library item not found' });
     }
 
+    res.status(200).json({ message: 'Collection deleted successfully' });
     res.status(204).send(); // No Content
   } catch (error) {
     res.status(500).json({ message: error.message });
