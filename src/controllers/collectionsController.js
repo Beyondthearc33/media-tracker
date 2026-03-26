@@ -54,8 +54,10 @@ exports.createCollection = async (req, res) => {
     const userId = req.user._id;
 
     // Build the document manually so ownership always comes from req.user
+    // and mediaIds are managed only through the /items endpoints
     const newCollection = new Collection({
-      ...req.body,
+      name: req.body.name,
+      description: req.body.description,
       userId,
     });
 
@@ -69,6 +71,7 @@ exports.createCollection = async (req, res) => {
 
 /* ***************************
  * PUT /api/collections/:id
+ * Do not allow the client to change ownership or mediaIds
  * *************************** */
 exports.updateCollection = async (req, res) => {
   try {
@@ -79,9 +82,17 @@ exports.updateCollection = async (req, res) => {
       return res.status(400).json({ message: 'Invalid collection id' });
     }
 
-    // Prevent client from changing the collection owner
-    const updateData = { ...req.body };
-    delete updateData.userId;
+    const updateData = {
+      name: req.body.name,
+      description: req.body.description,
+    };
+
+    // Remove undefined fields so partial updates still work cleanly
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      }
+    });
 
     const updatedCollection = await Collection.findOneAndUpdate(
       { _id: id, userId },
@@ -89,7 +100,7 @@ exports.updateCollection = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (!updatedCollection) {
@@ -155,7 +166,7 @@ exports.addItemToCollection = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (!updatedCollection) {
@@ -190,7 +201,7 @@ exports.removeItemFromCollection = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (!updatedCollection) {

@@ -11,7 +11,7 @@ const requireAuth = require('../middleware/requireAuth');
  * @swagger
  * tags:
  *   name: Collections
- *   description: User-created media collections
+ *   description: User-created media collections owned by the authenticated user
  */
 
 /**
@@ -50,9 +50,9 @@ const requireAuth = require('../middleware/requireAuth');
  * @swagger
  * /api/collections:
  *   get:
- *     summary: Get all collections
+ *     summary: Get all collections for the logged-in user
  *     tags: [Collections]
- *     description: Returns all collections. Authentication required.
+ *     description: Returns only the collections that belong to the authenticated user.
  *     responses:
  *       200:
  *         description: Collections retrieved successfully
@@ -73,9 +73,9 @@ router.get('/', requireAuth, collectionsController.getAllCollections);
  * @swagger
  * /api/collections/{id}:
  *   get:
- *     summary: Get a collection by ID
+ *     summary: Get one collection by ID
  *     tags: [Collections]
- *     description: Returns one collection by ID. Authentication required.
+ *     description: Returns one collection that belongs to the authenticated user.
  *     parameters:
  *       - in: path
  *         name: id
@@ -91,6 +91,8 @@ router.get('/', requireAuth, collectionsController.getAllCollections);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Collection'
+ *       400:
+ *         description: Invalid collection id
  *       401:
  *         description: Unauthorized
  *       404:
@@ -106,7 +108,7 @@ router.get('/:id', requireAuth, collectionsController.getCollectionById);
  *   post:
  *     summary: Create a new collection
  *     tags: [Collections]
- *     description: Creates a new collection. Authentication required.
+ *     description: Creates a new collection for the authenticated user. The owner is taken from the logged-in user, not from the request body.
  *     requestBody:
  *       required: true
  *       content:
@@ -114,9 +116,6 @@ router.get('/:id', requireAuth, collectionsController.getCollectionById);
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: string
- *                 example: 69acc835d5e6123967dabaf6
  *               name:
  *                 type: string
  *                 example: My Favorite Movies
@@ -148,7 +147,7 @@ router.post('/', requireAuth, collectionsController.createCollection);
  *   put:
  *     summary: Update a collection
  *     tags: [Collections]
- *     description: Updates a collection by ID. Authentication required.
+ *     description: Updates a collection that belongs to the authenticated user. Supports updating provided fields only. The collection owner cannot be changed.
  *     parameters:
  *       - in: path
  *         name: id
@@ -182,6 +181,8 @@ router.post('/', requireAuth, collectionsController.createCollection);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Collection'
+ *       400:
+ *         description: Invalid collection id
  *       401:
  *         description: Unauthorized
  *       404:
@@ -197,7 +198,7 @@ router.put('/:id', requireAuth, collectionsController.updateCollection);
  *   delete:
  *     summary: Delete a collection
  *     tags: [Collections]
- *     description: Deletes a collection by ID. Authentication required.
+ *     description: Deletes a collection that belongs to the authenticated user.
  *     parameters:
  *       - in: path
  *         name: id
@@ -207,8 +208,10 @@ router.put('/:id', requireAuth, collectionsController.updateCollection);
  *           type: string
  *           example: 69acd12bd5e6123967dabb05
  *     responses:
- *       204:
- *         description: Collection deleted successfully (no content)
+ *       200:
+ *         description: Collection deleted successfully
+ *       400:
+ *         description: Invalid collection id
  *       401:
  *         description: Unauthorized
  *       404:
@@ -224,7 +227,7 @@ router.delete('/:id', requireAuth, collectionsController.deleteCollection);
  *   post:
  *     summary: Add a media item to a collection
  *     tags: [Collections]
- *     description: Adds a media ID to the collection's mediaIds array. Authentication required.
+ *     description: Adds a media ID to the collection's mediaIds array only if the collection belongs to the authenticated user. Duplicate media IDs are prevented.
  *     parameters:
  *       - in: path
  *         name: id
@@ -251,7 +254,7 @@ router.delete('/:id', requireAuth, collectionsController.deleteCollection);
  *             schema:
  *               $ref: '#/components/schemas/Collection'
  *       400:
- *         description: mediaId is required
+ *         description: Invalid collection id, mediaId is required, or invalid media id
  *       401:
  *         description: Unauthorized
  *       404:
@@ -267,7 +270,7 @@ router.post('/:id/items', requireAuth, collectionsController.addItemToCollection
  *   delete:
  *     summary: Remove a media item from a collection
  *     tags: [Collections]
- *     description: Removes a media ID from the collection's mediaIds array. Authentication required.
+ *     description: Removes a media ID from the collection's mediaIds array only if the collection belongs to the authenticated user.
  *     parameters:
  *       - in: path
  *         name: id
@@ -290,6 +293,8 @@ router.post('/:id/items', requireAuth, collectionsController.addItemToCollection
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Collection'
+ *       400:
+ *         description: Invalid collection id or invalid media id
  *       401:
  *         description: Unauthorized
  *       404:
