@@ -1,0 +1,142 @@
+### Root
+GET http://localhost:3000/
+
+### Health Check
+GET http://localhost:3000/health
+
+### =========================================================
+### AUTH ROUTES
+### =========================================================
+
+### Auth - Login
+GET http://localhost:3000/api/auth/login
+
+### Auth - Callback
+GET http://localhost:3000/api/auth/callback
+
+### Auth - Current User
+GET http://localhost:3000/api/auth/me
+
+### Auth - Logout
+POST http://localhost:3000/api/auth/logout
+
+### =========================================================
+### MEDIA ROUTES
+### =========================================================
+
+### GET all media
+GET http://localhost:3000/api/media
+
+### GET media by ID
+GET http://localhost:3000/api/media/REPLACE_WITH_MEDIA_ID
+
+### CREATE media
+POST http://localhost:3000/api/media
+Content-Type: application/json
+
+{
+  "title": "Interstellar",
+  "type": "Movie",
+  "releaseYear": 2014,
+  "duration": 169,
+  "genre": "Science Fiction",
+  "director": "Christopher Nolan",
+  "cast": ["Matthew McConaughey", "Anne Hathaway"]
+}
+
+### UPDATE media
+PUT http://localhost:3000/api/media/REPLACE_WITH_MEDIA_ID
+Content-Type: application/json
+
+{
+  "title": "Interstellar",
+  "type": "Movie",
+  "releaseYear": 2014,
+  "duration": 170,
+  "genre": "Science Fiction",
+  "director": "Christopher Nolan",
+  "cast": ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"]
+}
+
+### DELETE media
+DELETE http://localhost:3000/api/media/REPLACE_WITH_MEDIA_ID
+
+### =========================================================
+### LIBRARY ROUTES
+### =========================================================
+
+### GET all library items
+GET http://localhost:3000/api/library
+
+### GET library item by ID
+GET http://localhost:3000/api/library/REPLACE_WITH_LIBRARY_ID
+
+### CREATE library item
+POST http://localhost:3000/api/library
+Content-Type: application/json
+
+{
+  "userId": "REPLACE_WITH_USER_ID",
+  "mediaId": "REPLACE_WITH_MEDIA_ID",
+  "status": "watching",
+  "rating": 8,
+  "notes": "Really good so far"
+}
+
+### UPDATE library item
+PUT http://localhost:3000/api/library/REPLACE_WITH_LIBRARY_ID
+Content-Type: application/json
+
+{
+  "status": "completed",
+  "rating": 9,
+  "notes": "Finished it and loved it"
+}
+
+### DELETE library item
+DELETE http://localhost:3000/api/library/REPLACE_WITH_LIBRARY_ID
+
+### =========================================================
+### COLLECTION ROUTES
+### =========================================================
+
+### GET all collections
+GET http://localhost:3000/api/collections
+
+### GET collection by ID
+GET http://localhost:3000/api/collections/REPLACE_WITH_COLLECTION_ID
+
+### CREATE collection
+POST http://localhost:3000/api/collections
+Content-Type: application/json
+
+{
+  "userId": "REPLACE_WITH_USER_ID",
+  "name": "Favorite Sci-Fi",
+  "description": "Movies and shows I really like",
+  "mediaIds": []
+}
+
+### UPDATE collection
+PUT http://localhost:3000/api/collections/REPLACE_WITH_COLLECTION_ID
+Content-Type: application/json
+
+{
+  "name": "Favorite Sci-Fi Movies",
+  "description": "Updated description",
+  "mediaIds": ["REPLACE_WITH_MEDIA_ID"]
+}
+
+### DELETE collection
+DELETE http://localhost:3000/api/collections/REPLACE_WITH_COLLECTION_ID
+
+### ADD media to collection
+POST http://localhost:3000/api/collections/REPLACE_WITH_COLLECTION_ID/items
+Content-Type: application/json
+
+{
+  "mediaId": "REPLACE_WITH_MEDIA_ID"
+}
+
+### REMOVE media from collection
+DELETE http://localhost:3000/api/collections/REPLACE_WITH_COLLECTION_ID/items/REPLACE_WITH_MEDIA_ID
