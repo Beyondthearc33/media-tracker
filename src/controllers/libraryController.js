@@ -61,7 +61,7 @@ exports.createLibraryItem = async (req, res, next) => {
     const errors = validateLibraryItem(req.body);
 
     if(errors.length > 0) {
-      return res.status(400).json({
+      return res.status(422).json({
         success: false,
         message: 'Validation failed',
         errors,
@@ -106,7 +106,7 @@ exports.updateLibraryItem = async (req, res, next) => {
     const errors = validateLibraryItem(req.body, true);
 
     if(errors.length > 0) {
-      return res.status(400).json({
+      return res.status(422).json({
         success: false,
         message: 'Validation failed',
         errors,

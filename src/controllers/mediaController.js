@@ -49,7 +49,7 @@ const createMedia = async (req, res, next) => {
     const errors = validateMedia(req.body);
 
     if (errors.length > 0) {
-      return res.status(400).json({
+      return res.status(422).json({
         success: false,
         message: 'Validation failed',
         errors,
@@ -87,7 +87,7 @@ const updateMedia = async (req, res, next) => {
     const errors = validateMedia(req.body, true);
 
     if (errors.length > 0) {
-      return res.status(400).json({
+      return res.status(422).json({
         success: false,
         message: 'Validation failed',
         errors,
