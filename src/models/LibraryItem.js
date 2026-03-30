@@ -21,6 +21,7 @@ const librarySchema = new Schema(
       type: String,
       enum: ['watching', 'completed', 'plan_to_watch', 'dropped'],
       default: 'plan_to_watch',
+      required: true,
     },
 
     userRating: {

@@ -19,6 +19,8 @@ const mediaSchema = new mongoose.Schema(
     releaseYear: {
       type: Number,
       required: true,
+      min: 1888, // The year of the first known film
+      max: new Date().getFullYear(),
     },
 
     duration: {

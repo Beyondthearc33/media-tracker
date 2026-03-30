@@ -3,12 +3,13 @@
  * ************************** */
 const mongoose = require('mongoose');
 const Collection = require('../models/Collection');
+const { validateCollection } = require('../helpers/validate');
 
 /* ***************************
  * GET /api/collections
  * Return only collections that belong to the logged-in user
  * *************************** */
-exports.getAllCollections = async (req, res) => {
+exports.getAllCollections = async (req, res, next) => {
   try {
     const userId = req.user._id;
 
@@ -17,41 +18,57 @@ exports.getAllCollections = async (req, res) => {
 
     res.status(200).json(collections);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 /* ***************************
  * GET /api/collections/:id
  * *************************** */
-exports.getCollectionById = async (req, res) => {
+exports.getCollectionById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid collection id' });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid collection id',
+      });
     }
 
     // Find by BOTH collection id and owner id
     const collection = await Collection.findOne({ _id: id, userId });
 
     if (!collection) {
-      return res.status(404).json({ message: 'Collection not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Collection not found',
+      });
     }
 
     res.status(200).json(collection);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 /* ***************************
  * POST /api/collections
  * *************************** */
-exports.createCollection = async (req, res) => {
+exports.createCollection = async (req, res, next) => {
   try {
     const userId = req.user._id;
+
+    const errors = validateCollection(req.body);
+
+    if(errors.length > 0) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Validation failed',
+        errors,
+      });
+    }
 
     // Build the document manually so ownership always comes from req.user
     // and mediaIds are managed only through the /items endpoints
@@ -65,7 +82,7 @@ exports.createCollection = async (req, res) => {
 
     res.status(201).json(savedCollection);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
@@ -73,13 +90,16 @@ exports.createCollection = async (req, res) => {
  * PUT /api/collections/:id
  * Do not allow the client to change ownership or mediaIds
  * *************************** */
-exports.updateCollection = async (req, res) => {
+exports.updateCollection = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid collection id' });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid collection id',
+      });
     }
 
     const updateData = {
@@ -94,6 +114,16 @@ exports.updateCollection = async (req, res) => {
       }
     });
 
+    const errors = validateCollection(req.body, true);
+
+    if(errors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors,
+      });
+    }
+
     const updatedCollection = await Collection.findOneAndUpdate(
       { _id: id, userId },
       updateData,
@@ -104,36 +134,48 @@ exports.updateCollection = async (req, res) => {
     );
 
     if (!updatedCollection) {
-      return res.status(404).json({ message: 'Collection not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Collection not found',
+      });
     }
 
     res.status(200).json(updatedCollection);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 /* ***************************
  * DELETE /api/collections/:id
  * *************************** */
-exports.deleteCollection = async (req, res) => {
+exports.deleteCollection = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid collection id' });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid collection id',
+      });
     }
 
     const deletedCollection = await Collection.findOneAndDelete({ _id: id, userId });
 
     if (!deletedCollection) {
-      return res.status(404).json({ message: 'Collection not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Collection not found',
+      });
     }
 
-    res.status(200).json({ message: 'Collection deleted successfully' });
+    res.status(200).json({
+      success: true,
+      message: 'Collection deleted successfully',
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
@@ -141,22 +183,31 @@ exports.deleteCollection = async (req, res) => {
  * POST /api/collections/:id/items
  * Add mediaId to a collection only if the collection belongs to the logged-in user
  * *************************** */
-exports.addItemToCollection = async (req, res) => {
+exports.addItemToCollection = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { mediaId } = req.body;
     const userId = req.user._id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid collection id' });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid collection id',
+      });
     }
 
     if (!mediaId) {
-      return res.status(400).json({ message: 'mediaId is required' });
+      return res.status(400).json({
+        success: false,
+        message: 'mediaId is required',
+      });
     }
 
     if (!mongoose.Types.ObjectId.isValid(mediaId)) {
-      return res.status(400).json({ message: 'Invalid media id' });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid media id',
+      });
     }
 
     // Use $addToSet so the same media item is not added twice
@@ -170,29 +221,38 @@ exports.addItemToCollection = async (req, res) => {
     );
 
     if (!updatedCollection) {
-      return res.status(404).json({ message: 'Collection not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Collection not found',
+      });
     }
 
     res.status(200).json(updatedCollection);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 /* ***************************
  * DELETE /api/collections/:id/items/:mediaId
  * *************************** */
-exports.removeItemFromCollection = async (req, res) => {
+exports.removeItemFromCollection = async (req, res, next) => {
   try {
     const { id, mediaId } = req.params;
     const userId = req.user._id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid collection id' });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid collection id',
+      });
     }
 
     if (!mongoose.Types.ObjectId.isValid(mediaId)) {
-      return res.status(400).json({ message: 'Invalid media id' });
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid media id',
+      });
     }
 
     const updatedCollection = await Collection.findOneAndUpdate(
@@ -205,11 +265,14 @@ exports.removeItemFromCollection = async (req, res) => {
     );
 
     if (!updatedCollection) {
-      return res.status(404).json({ message: 'Collection not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Collection not found',
+      });
     }
 
     res.status(200).json(updatedCollection);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
