@@ -1,7 +1,7 @@
 /* ***************************
  * helpers/validate.js
  * *************************** */
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 // Validate Collection
 const validateCollection = (data, isUpdate = false) => {
@@ -9,12 +9,12 @@ const validateCollection = (data, isUpdate = false) => {
 
   if (!isUpdate || data.name !== undefined) {
     if (!data.name || data.name.trim().length < 2) {
-      errors.push("Collection name is required and must be at least 2 characters");
+      errors.push('Collection name is required and must be at least 2 characters');
     }
   }
 
-  if (data.description && typeof data.description !== "string") {
-    errors.push("Description must be a string");
+  if (data.description && typeof data.description !== 'string') {
+    errors.push('Description must be a string');
   }
 
   return errors;
@@ -24,29 +24,33 @@ const validateCollection = (data, isUpdate = false) => {
 const validateLibraryItem = (data, isUpdate = false) => {
   const errors = [];
 
-  const validStatuses = ["watching", "completed", "plan_to_watch", "dropped"];
+  const validStatuses = ['watching', 'completed', 'plan_to_watch', 'dropped'];
 
   if (!isUpdate || data.mediaId !== undefined) {
     if (!data.mediaId) {
-      errors.push("mediaId is required");
+      errors.push('mediaId is required');
     }
   }
 
   if (!isUpdate && !data.status) {
-    errors.push("Status is required");
+    errors.push('Status is required');
   }
 
   if (data.mediaId && !mongoose.Types.ObjectId.isValid(data.mediaId)) {
-    errors.push("Invalid mediaId");
+    errors.push('Invalid mediaId');
   }
 
   if (data.status !== undefined && !validStatuses.includes(data.status)) {
-    errors.push("Invalid status value");
+    errors.push('Invalid status value');
   }
 
   if (data.userRating !== undefined) {
-    if (typeof data.userRating !== "number" || data.userRating < 1 || data.userRating > 5) {
-      errors.push("User rating must be a number between 1 and 5");
+    if (
+      typeof data.userRating !== 'number' ||
+      data.userRating < 1 ||
+      data.userRating > 5
+    ) {
+      errors.push('User rating must be a number between 1 and 5');
     }
   }
 
