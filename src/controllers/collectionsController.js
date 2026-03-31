@@ -62,8 +62,8 @@ exports.createCollection = async (req, res, next) => {
 
     const errors = validateCollection(req.body);
 
-    if(errors.length > 0) {
-      return res.status(422).json({ 
+    if (errors.length > 0) {
+      return res.status(422).json({
         success: false,
         message: 'Validation failed',
         errors,
@@ -116,7 +116,7 @@ exports.updateCollection = async (req, res, next) => {
 
     const errors = validateCollection(req.body, true);
 
-    if(errors.length > 0) {
+    if (errors.length > 0) {
       return res.status(422).json({
         success: false,
         message: 'Validation failed',

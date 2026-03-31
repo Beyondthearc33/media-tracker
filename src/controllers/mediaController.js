@@ -104,14 +104,10 @@ const updateMedia = async (req, res, next) => {
       }
     });
 
-    const updatedMedia = await Media.findByIdAndUpdate(
-      id,
-      updateData,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const updatedMedia = await Media.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedMedia) {
       const err = new Error('Media not found');
