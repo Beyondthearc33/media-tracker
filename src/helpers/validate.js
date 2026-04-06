@@ -4,21 +4,7 @@
 const mongoose = require('mongoose');
 
 // Validate Collection
-const validateCollection = (data, isUpdate = false) => {
-  const errors = [];
 
-  if (!isUpdate || data.name !== undefined) {
-    if (!data.name || data.name.trim().length < 2) {
-      errors.push('Collection name is required and must be at least 2 characters');
-    }
-  }
-
-  if (data.description && typeof data.description !== 'string') {
-    errors.push('Description must be a string');
-  }
-
-  return errors;
-};
 
 // Validate Library Item
 const validateLibraryItem = (data, isUpdate = false) => {
@@ -124,7 +110,6 @@ const validateMedia = (data, isUpdate = false) => {
 };
 
 module.exports = {
-  validateCollection,
   validateLibraryItem,
   validateMedia,
 };

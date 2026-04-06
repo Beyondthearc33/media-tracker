@@ -2,6 +2,9 @@
  * validators/collectionsValidator.js
  * *************************** */
 
+const mongoose = require('mongoose');
+
+// Existing validation (keep this)
 const validateCollection = (data, isUpdate = false) => {
   const errors = [];
 
@@ -12,10 +15,8 @@ const validateCollection = (data, isUpdate = false) => {
   }
 
   if (data.description !== undefined) {
-    if (data.description !== undefined) {
-      if (typeof data.description !== 'string') {
-        errors.push('Description must be a string');
-      }
+    if (typeof data.description !== 'string') {
+      errors.push('Description must be a string');
     }
   }
 
@@ -28,6 +29,7 @@ const validateCollection = (data, isUpdate = false) => {
   return errors;
 };
 
+// Middleware for body validation
 const validateCollectionMiddleware = (isUpdate = false) => {
   return (req, res, next) => {
     const errors = validateCollection(req.body, isUpdate);
@@ -44,4 +46,45 @@ const validateCollectionMiddleware = (isUpdate = false) => {
   };
 };
 
-module.exports = validateCollectionMiddleware;
+// Validate ObjectId param
+const validateObjectId = (paramName) => {
+  return (req, res, next) => {
+    const value = req.params[paramName];
+
+    if (!mongoose.Types.ObjectId.isValid(value)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid ${paramName}`,
+      });
+    }
+
+    next();
+  };
+};
+
+// Validate mediaId in body
+const validateMediaIdBody = (req, res, next) => {
+  const { mediaId } = req.body;
+
+  if (!mediaId) {
+    return res.status(400).json({
+      success: false,
+      message: 'mediaId is required',
+    });
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(mediaId)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid media id',
+    });
+  }
+
+  next();
+};
+
+module.exports = {
+  validateCollectionMiddleware,
+  validateObjectId,
+  validateMediaIdBody,
+};

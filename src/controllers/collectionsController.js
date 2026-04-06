@@ -29,13 +29,6 @@ exports.getCollectionById = async (req, res, next) => {
     const { id } = req.params;
     const userId = req.user._id;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid collection id',
-      });
-    }
-
     // Find by BOTH collection id and owner id
     const collection = await Collection.findOne({ _id: id, userId });
 
@@ -84,13 +77,6 @@ exports.updateCollection = async (req, res, next) => {
     const { id } = req.params;
     const userId = req.user._id;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid collection id',
-      });
-    }
-
     const updateData = {
       name: req.body.name,
       description: req.body.description,
@@ -133,13 +119,6 @@ exports.deleteCollection = async (req, res, next) => {
     const { id } = req.params;
     const userId = req.user._id;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid collection id',
-      });
-    }
-
     const deletedCollection = await Collection.findOneAndDelete({ _id: id, userId });
 
     if (!deletedCollection) {
@@ -167,27 +146,6 @@ exports.addItemToCollection = async (req, res, next) => {
     const { id } = req.params;
     const { mediaId } = req.body;
     const userId = req.user._id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid collection id',
-      });
-    }
-
-    if (!mediaId) {
-      return res.status(400).json({
-        success: false,
-        message: 'mediaId is required',
-      });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(mediaId)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid media id',
-      });
-    }
 
     // Use $addToSet so the same media item is not added twice
     const updatedCollection = await Collection.findOneAndUpdate(
@@ -219,20 +177,6 @@ exports.removeItemFromCollection = async (req, res, next) => {
   try {
     const { id, mediaId } = req.params;
     const userId = req.user._id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid collection id',
-      });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(mediaId)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid media id',
-      });
-    }
 
     const updatedCollection = await Collection.findOneAndUpdate(
       { _id: id, userId },
