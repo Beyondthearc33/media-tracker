@@ -54,7 +54,8 @@ const validateObjectId = (paramName) => {
     if (!mongoose.Types.ObjectId.isValid(value)) {
       return res.status(400).json({
         success: false,
-        message: `Invalid ${paramName}`,
+        // message: `Invalid ${paramName}`,
+        message: `${paramName} must be a valid ObjectId`,
       });
     }
 
