@@ -7,6 +7,8 @@ const router = express.Router();
 const collectionsController = require('../controllers/collectionsController');
 const requireAuth = require('../middleware/requireAuth');
 
+const validateCollectionMiddleware = require('../validators/collectionsValidator');
+
 /**
  * @swagger
  * tags:
@@ -139,7 +141,7 @@ router.get('/:id', requireAuth, collectionsController.getCollectionById);
  *       500:
  *         description: Server error
  */
-router.post('/', requireAuth, collectionsController.createCollection);
+router.post('/', requireAuth, validateCollectionMiddleware(false), collectionsController.createCollection);
 
 /**
  * @swagger
@@ -190,7 +192,7 @@ router.post('/', requireAuth, collectionsController.createCollection);
  *       500:
  *         description: Server error
  */
-router.put('/:id', requireAuth, collectionsController.updateCollection);
+router.put('/:id', requireAuth, validateCollectionMiddleware(true), collectionsController.updateCollection);
 
 /**
  * @swagger

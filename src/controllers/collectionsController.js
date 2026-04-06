@@ -3,7 +3,6 @@
  * ************************** */
 const mongoose = require('mongoose');
 const Collection = require('../models/Collection');
-const { validateCollection } = require('../helpers/validate');
 
 /* ***************************
  * GET /api/collections
@@ -60,16 +59,6 @@ exports.createCollection = async (req, res, next) => {
   try {
     const userId = req.user._id;
 
-    const errors = validateCollection(req.body);
-
-    if (errors.length > 0) {
-      return res.status(422).json({
-        success: false,
-        message: 'Validation failed',
-        errors,
-      });
-    }
-
     // Build the document manually so ownership always comes from req.user
     // and mediaIds are managed only through the /items endpoints
     const newCollection = new Collection({
@@ -113,16 +102,6 @@ exports.updateCollection = async (req, res, next) => {
         delete updateData[key];
       }
     });
-
-    const errors = validateCollection(req.body, true);
-
-    if (errors.length > 0) {
-      return res.status(422).json({
-        success: false,
-        message: 'Validation failed',
-        errors,
-      });
-    }
 
     const updatedCollection = await Collection.findOneAndUpdate(
       { _id: id, userId },
