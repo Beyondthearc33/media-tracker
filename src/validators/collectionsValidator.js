@@ -4,7 +4,7 @@
 
 const mongoose = require('mongoose');
 
-// Existing validation (keep this)
+// Existing validation
 const validateCollection = (data, isUpdate = false) => {
   const errors = [];
 

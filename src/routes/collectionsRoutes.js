@@ -234,7 +234,7 @@ router.put(
  *           type: string
  *           example: 69acd12bd5e6123967dabb05
  *     responses:
- *       200:
+ *       204:
  *         description: Collection deleted successfully
  *       400:
  *         description: Invalid collection id
