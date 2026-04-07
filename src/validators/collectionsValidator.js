@@ -8,22 +8,28 @@ const mongoose = require('mongoose');
 const validateCollection = (data, isUpdate = false) => {
   const errors = [];
 
+  // Name
   if (!isUpdate || data.name !== undefined) {
     if (!data.name || typeof data.name !== 'string' || data.name.trim().length < 2) {
       errors.push('Collection name is required and must be at least 2 characters');
     }
   }
 
+  // mediaIds cannot be set during creation
+  if (!isUpdate && data.mediaIds !== undefined) {
+    errors.push('mediaIds cannot be set during creation');
+  }
+
+  // Description
   if (data.description !== undefined) {
     if (typeof data.description !== 'string') {
       errors.push('Description must be a string');
     }
   }
 
+  // mediaIds must be an array if provided (only for updates)
   if (data.mediaIds !== undefined) {
-    if (!Array.isArray(data.mediaIds)) {
-      errors.push('mediaIds must be an array');
-    }
+    errors.push('mediaIds cannot be modified directly. Use /items endpoints.');
   }
 
   return errors;

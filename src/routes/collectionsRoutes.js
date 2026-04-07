@@ -249,6 +249,7 @@ router.put(
 router.delete(
   '/:id', 
   requireAuth, 
+  validateObjectId('id'),
   collectionsController.deleteCollection
 );
 

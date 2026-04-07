@@ -1,8 +1,13 @@
 /* ***************************
  *  controllers/collectionsController.js
  * ************************** */
-const mongoose = require('mongoose');
 const Collection = require('../models/Collection');
+const mongoose = require('mongoose');
+
+if (!mongoose.Types.ObjectId.isValid(id)) {
+  return res.status(400).json({ success: false, message: 'Invalid ID' });
+}
+
 
 /* ***************************
  * GET /api/collections
@@ -128,10 +133,12 @@ exports.deleteCollection = async (req, res, next) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'Collection deleted successfully',
-    });
+    // res.status(200).json({
+    //   success: true,
+    //   message: 'Collection deleted successfully',
+    // });
+
+    res.status(204).send();
   } catch (error) {
     next(error);
   }
@@ -156,6 +163,13 @@ exports.addItemToCollection = async (req, res, next) => {
         runValidators: true,
       },
     );
+
+    if (!mediaId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'mediaId is required' 
+      });
+    }
 
     if (!updatedCollection) {
       return res.status(404).json({

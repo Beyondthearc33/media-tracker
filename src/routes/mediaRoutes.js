@@ -10,6 +10,11 @@ const mediaController = require('../controllers/mediaController');
 
 const requireAuth = require('../middleware/requireAuth');
 
+const {
+  validateMediaMiddleware,
+  validateObjectId,
+} = require('../validators/mediaValidator');
+
 /**
  * @swagger
  * tags:
@@ -86,7 +91,10 @@ const requireAuth = require('../middleware/requireAuth');
  *       500:
  *         description: Server error
  */
-router.get('/', mediaController.getAllMedia);
+router.get(
+    '/', 
+    mediaController.getAllMedia
+);
 
 // GET a single media item by ID
 /**
@@ -116,7 +124,11 @@ router.get('/', mediaController.getAllMedia);
  *       500:
  *         description: Server error
  */
-router.get('/:id', mediaController.getMediaById);
+router.get(
+  '/:id',
+  validateObjectId('id'),
+  mediaController.getMediaById
+);
 
 // POST create a new media item
 /**
@@ -178,7 +190,12 @@ router.get('/:id', mediaController.getMediaById);
  *       500:
  *         description: Server error
  */
-router.post('/', requireAuth, mediaController.createMedia);
+router.post(
+  '/',
+  requireAuth,
+  validateMediaMiddleware(false),
+  mediaController.createMedia
+);
 
 // PUT update a media item by ID
 /**
@@ -250,7 +267,13 @@ router.post('/', requireAuth, mediaController.createMedia);
  *       500:
  *         description: Server error
  */
-router.put('/:id', requireAuth, mediaController.updateMedia);
+router.put(
+  '/:id',
+  requireAuth,
+  validateObjectId('id'),
+  validateMediaMiddleware(true),
+  mediaController.updateMedia
+);
 
 // DELETE a media item by ID
 /**
@@ -269,7 +292,7 @@ router.put('/:id', requireAuth, mediaController.updateMedia);
  *           type: string
  *           example: 69acc350d5e6123967dababf
  *     responses:
- *       200:
+ *       204:
  *         description: Media item deleted successfully
  *         content:
  *           application/json:
@@ -286,6 +309,11 @@ router.put('/:id', requireAuth, mediaController.updateMedia);
  *       500:
  *         description: Server error
  */
-router.delete('/:id', requireAuth, mediaController.deleteMedia);
+router.delete(
+  '/:id',
+  requireAuth,
+  validateObjectId('id'),
+  mediaController.deleteMedia
+);
 
 module.exports = router;
