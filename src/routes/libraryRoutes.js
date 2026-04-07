@@ -154,9 +154,11 @@ router.get(
  *             schema:
  *               $ref: '#/components/schemas/LibraryItem'
  *       400:
- *         description: Invalid input or duplicate entry (media already exists in library)
+ *         description: Duplicate entry (media already exists in library)
  *       401:
  *         description: Unauthorized
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */
@@ -210,11 +212,13 @@ router.post(
  *             schema:
  *               $ref: '#/components/schemas/LibraryItem'
  *       400:
- *         description: Invalid library item id, invalid input, or duplicate entry
+ *         description: Invalid library item id or duplicate entry
  *       401:
  *         description: Unauthorized
  *       404:
  *         description: Library item not found
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */

@@ -1,12 +1,7 @@
-/* ***************************
+/* ********************************
  *  controllers/libraryController.js
- * ************************** */
+ * ******************************** */
 const LibraryItem = require('../models/LibraryItem');
-const mongoose = require('mongoose');
-
-if (!mongoose.Types.ObjectId.isValid(id)) {
-  return res.status(400).json({ success: false, message: 'Invalid ID' });
-}
 
 /* ***************************
  * GET /api/library
@@ -101,6 +96,7 @@ exports.updateLibraryItem = async (req, res, next) => {
       }
     });
 
+    // Prevent userId from being overwritten
     delete updateData.userId;
 
     const updatedItem = await LibraryItem.findOneAndUpdate(

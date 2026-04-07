@@ -3,7 +3,7 @@
  * *************************** */
 const mongoose = require('mongoose');
 
-const validateLibrary = (data, isUpdate = false) => {
+const validateLibrary = (data = {}, isUpdate = false) => {
   const errors = [];
 
   const validStatuses = ['watching', 'completed', 'plan_to_watch', 'dropped'];
@@ -16,10 +16,8 @@ const validateLibrary = (data, isUpdate = false) => {
     }
   }
 
-  if (!isUpdate || data.status !== undefined) {
-    if (!data.status) {
-      errors.push('Status is required');
-    } else if (!validStatuses.includes(data.status)) {
+  if (data.status !== undefined) {
+    if (!validStatuses.includes(data.status)) {
       errors.push('Invalid status value');
     }
   }
@@ -48,7 +46,7 @@ const validateLibraryMiddleware = (isUpdate = false) => {
     const errors = validateLibrary(req.body, isUpdate);
 
     if (errors.length > 0) {
-      return res.status(400).json({
+      return res.status(422).json({
         success: false,
         message: 'Validation failed',
         errors,
