@@ -1,13 +1,16 @@
 /* ***************************
  *  routes/libraryRoutes.js
- * No validation yet
  * ************************** */
 const express = require('express');
 const router = express.Router();
 
 const libraryController = require('../controllers/libraryController');
-
 const requireAuth = require('../middleware/requireAuth');
+
+const {
+  validateLibraryMiddleware,
+  validateObjectId,
+} = require('../validators/libraryValidator');
 
 /**
  * @swagger
@@ -73,7 +76,11 @@ const requireAuth = require('../middleware/requireAuth');
  *       500:
  *         description: Server error
  */
-router.get('/', requireAuth, libraryController.getAllLibraryItems);
+router.get(
+    '/', 
+    requireAuth, 
+    libraryController.getAllLibraryItems
+);
 
 // GET a single library item by ID
 /**
@@ -106,7 +113,12 @@ router.get('/', requireAuth, libraryController.getAllLibraryItems);
  *       500:
  *         description: Server error
  */
-router.get('/:id', requireAuth, libraryController.getLibraryItemById);
+router.get(
+  '/:id',
+  requireAuth,
+  validateObjectId('id'),
+  libraryController.getLibraryItemById
+);
 
 // POST a new library item
 /**
@@ -152,7 +164,12 @@ router.get('/:id', requireAuth, libraryController.getLibraryItemById);
  *       500:
  *         description: Server error
  */
-router.post('/', requireAuth, libraryController.createLibraryItem);
+router.post(
+  '/',
+  requireAuth,
+  validateLibraryMiddleware(false),
+  libraryController.createLibraryItem
+);
 
 // PUT update a library item by ID
 /**
@@ -205,7 +222,13 @@ router.post('/', requireAuth, libraryController.createLibraryItem);
  *       500:
  *         description: Server error
  */
-router.put('/:id', requireAuth, libraryController.updateLibraryItem);
+router.put(
+  '/:id',
+  requireAuth,
+  validateObjectId('id'),
+  validateLibraryMiddleware(true),
+  libraryController.updateLibraryItem
+);
 
 // DELETE a library item by ID
 /**
@@ -223,7 +246,7 @@ router.put('/:id', requireAuth, libraryController.updateLibraryItem);
  *         schema:
  *           type: string
  *     responses:
- *       200:
+ *       204:
  *         description: Library item deleted successfully
  *       400:
  *         description: Invalid library item id
@@ -234,6 +257,11 @@ router.put('/:id', requireAuth, libraryController.updateLibraryItem);
  *       500:
  *         description: Server error
  */
-router.delete('/:id', requireAuth, libraryController.deleteLibraryItem);
+router.delete(
+  '/:id',
+  requireAuth,
+  validateObjectId('id'),
+  libraryController.deleteLibraryItem
+);
 
 module.exports = router;

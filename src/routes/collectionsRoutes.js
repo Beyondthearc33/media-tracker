@@ -5,7 +5,14 @@ const express = require('express');
 const router = express.Router();
 
 const collectionsController = require('../controllers/collectionsController');
+
 const requireAuth = require('../middleware/requireAuth');
+
+const {
+  validateCollectionMiddleware,
+  validateObjectId,
+  validateMediaIdBody,
+} = require('../validators/collectionsValidator');
 
 /**
  * @swagger
@@ -67,7 +74,11 @@ const requireAuth = require('../middleware/requireAuth');
  *       500:
  *         description: Server error
  */
-router.get('/', requireAuth, collectionsController.getAllCollections);
+router.get(
+  '/', 
+  requireAuth, 
+  collectionsController.getAllCollections
+);
 
 /**
  * @swagger
@@ -100,7 +111,12 @@ router.get('/', requireAuth, collectionsController.getAllCollections);
  *       500:
  *         description: Server error
  */
-router.get('/:id', requireAuth, collectionsController.getCollectionById);
+router.get(
+  '/:id',
+  requireAuth,
+  validateObjectId('id'),
+  collectionsController.getCollectionById
+);
 
 /**
  * @swagger
@@ -139,7 +155,12 @@ router.get('/:id', requireAuth, collectionsController.getCollectionById);
  *       500:
  *         description: Server error
  */
-router.post('/', requireAuth, collectionsController.createCollection);
+router.post(
+  '/', 
+  requireAuth, 
+  validateCollectionMiddleware(false), 
+  collectionsController.createCollection
+);
 
 /**
  * @swagger
@@ -190,7 +211,13 @@ router.post('/', requireAuth, collectionsController.createCollection);
  *       500:
  *         description: Server error
  */
-router.put('/:id', requireAuth, collectionsController.updateCollection);
+router.put(
+  '/:id',
+  requireAuth,
+  validateObjectId('id'),
+  validateCollectionMiddleware(true),
+  collectionsController.updateCollection
+);
 
 /**
  * @swagger
@@ -208,7 +235,7 @@ router.put('/:id', requireAuth, collectionsController.updateCollection);
  *           type: string
  *           example: 69acd12bd5e6123967dabb05
  *     responses:
- *       200:
+ *       204:
  *         description: Collection deleted successfully
  *       400:
  *         description: Invalid collection id
@@ -219,7 +246,12 @@ router.put('/:id', requireAuth, collectionsController.updateCollection);
  *       500:
  *         description: Server error
  */
-router.delete('/:id', requireAuth, collectionsController.deleteCollection);
+router.delete(
+  '/:id', 
+  requireAuth, 
+  validateObjectId('id'),
+  collectionsController.deleteCollection
+);
 
 /**
  * @swagger
@@ -262,7 +294,13 @@ router.delete('/:id', requireAuth, collectionsController.deleteCollection);
  *       500:
  *         description: Server error
  */
-router.post('/:id/items', requireAuth, collectionsController.addItemToCollection);
+router.post(
+  '/:id/items',
+  requireAuth,
+  validateObjectId('id'),
+  validateMediaIdBody,
+  collectionsController.addItemToCollection
+);
 
 /**
  * @swagger
@@ -305,7 +343,9 @@ router.post('/:id/items', requireAuth, collectionsController.addItemToCollection
 router.delete(
   '/:id/items/:mediaId',
   requireAuth,
-  collectionsController.removeItemFromCollection,
+  validateObjectId('id'),
+  validateObjectId('mediaId'),
+  collectionsController.removeItemFromCollection
 );
 
 module.exports = router;

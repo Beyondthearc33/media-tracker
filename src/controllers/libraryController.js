@@ -1,9 +1,12 @@
 /* ***************************
  *  controllers/libraryController.js
  * ************************** */
-const mongoose = require('mongoose');
 const LibraryItem = require('../models/LibraryItem');
-const { validateLibraryItem } = require('../helpers/validate');
+const mongoose = require('mongoose');
+
+if (!mongoose.Types.ObjectId.isValid(id)) {
+  return res.status(400).json({ success: false, message: 'Invalid ID' });
+}
 
 /* ***************************
  * GET /api/library
@@ -11,6 +14,7 @@ const { validateLibraryItem } = require('../helpers/validate');
 exports.getAllLibraryItems = async (req, res, next) => {
   try {
     const userId = req.user._id;
+
     // Only return items owned by the authenticated user
     const items = await LibraryItem.find({ userId });
 
@@ -27,13 +31,6 @@ exports.getLibraryItemById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid library item id',
-      });
-    }
 
     // Find the item by BOTH _id and userId
     const libraryItem = await LibraryItem.findOne({ _id: id, userId });
@@ -58,20 +55,14 @@ exports.createLibraryItem = async (req, res, next) => {
   try {
     const userId = req.user._id;
 
-    const errors = validateLibraryItem(req.body);
-
-    if (errors.length > 0) {
-      return res.status(422).json({
-        success: false,
-        message: 'Validation failed',
-        errors,
-      });
-    }
-
     const newItem = new LibraryItem({
-      ...req.body,
+      mediaId: req.body.mediaId,
+      status: req.body.status,
+      userRating: req.body.userRating,
+      notes: req.body.notes,
       userId,
     });
+
     const savedItem = await newItem.save();
 
     res.status(201).json(savedItem); // Created
@@ -96,24 +87,20 @@ exports.updateLibraryItem = async (req, res, next) => {
     const { id } = req.params;
     const userId = req.user._id;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid library item id',
-      });
-    }
+    const updateData = {
+      mediaId: req.body.mediaId,
+      status: req.body.status,
+      userRating: req.body.userRating,
+      notes: req.body.notes,
+    };
 
-    const errors = validateLibraryItem(req.body, true);
+    // remove undefined
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      }
+    });
 
-    if (errors.length > 0) {
-      return res.status(422).json({
-        success: false,
-        message: 'Validation failed',
-        errors,
-      });
-    }
-
-    const updateData = { ...req.body };
     delete updateData.userId;
 
     const updatedItem = await LibraryItem.findOneAndUpdate(
@@ -152,13 +139,6 @@ exports.deleteLibraryItem = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid library item id',
-      });
-    }
 
     const deletedItem = await LibraryItem.findOneAndDelete({ _id: id, userId });
 
