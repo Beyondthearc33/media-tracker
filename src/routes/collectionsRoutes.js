@@ -148,6 +148,8 @@ router.get(
  *               $ref: '#/components/schemas/Collection'
  *       401:
  *         description: Unauthorized
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */
@@ -204,6 +206,8 @@ router.post(
  *         description: Unauthorized
  *       404:
  *         description: Collection not found
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */
@@ -287,6 +291,8 @@ router.delete(
  *         description: Unauthorized
  *       404:
  *         description: Collection not found
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */

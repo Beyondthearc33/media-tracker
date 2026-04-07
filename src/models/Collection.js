@@ -14,7 +14,7 @@ const collectionSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      minlength: 1,
+      minlength: 2,
     },
 
     description: {
