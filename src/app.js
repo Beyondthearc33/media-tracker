@@ -10,6 +10,7 @@ const express = require('express');
 // Sessions + Auth
 const session = require('express-session');
 const passport = require('passport');
+const MongoStore = require('connect-mongo');
 
 // Swagger UI
 const swaggerUi = require('swagger-ui-express');
@@ -40,23 +41,32 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.set('trust proxy', 1);
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      collectionName: 'sessions',
+    }),
+
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production', // keep dynamic
       sameSite: 'lax',
-      maxAge: 60 * 60 * 1000,
+      maxAge: 2 * 60 * 60 * 1000, // ✅ 2 HOURS
     },
-  })
+  }),
 );
 
+// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Swagger docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Basic test routes
