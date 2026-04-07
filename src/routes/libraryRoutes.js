@@ -76,11 +76,7 @@ const {
  *       500:
  *         description: Server error
  */
-router.get(
-    '/', 
-    requireAuth, 
-    libraryController.getAllLibraryItems
-);
+router.get('/', requireAuth, libraryController.getAllLibraryItems);
 
 // GET a single library item by ID
 /**
@@ -117,7 +113,7 @@ router.get(
   '/:id',
   requireAuth,
   validateObjectId('id'),
-  libraryController.getLibraryItemById
+  libraryController.getLibraryItemById,
 );
 
 // POST a new library item
@@ -158,9 +154,11 @@ router.get(
  *             schema:
  *               $ref: '#/components/schemas/LibraryItem'
  *       400:
- *         description: Invalid input or duplicate entry (media already exists in library)
+ *         description: Duplicate entry (media already exists in library)
  *       401:
  *         description: Unauthorized
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */
@@ -168,7 +166,7 @@ router.post(
   '/',
   requireAuth,
   validateLibraryMiddleware(false),
-  libraryController.createLibraryItem
+  libraryController.createLibraryItem,
 );
 
 // PUT update a library item by ID
@@ -214,11 +212,13 @@ router.post(
  *             schema:
  *               $ref: '#/components/schemas/LibraryItem'
  *       400:
- *         description: Invalid library item id, invalid input, or duplicate entry
+ *         description: Invalid library item id or duplicate entry
  *       401:
  *         description: Unauthorized
  *       404:
  *         description: Library item not found
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */
@@ -227,7 +227,7 @@ router.put(
   requireAuth,
   validateObjectId('id'),
   validateLibraryMiddleware(true),
-  libraryController.updateLibraryItem
+  libraryController.updateLibraryItem,
 );
 
 // DELETE a library item by ID
@@ -261,7 +261,7 @@ router.delete(
   '/:id',
   requireAuth,
   validateObjectId('id'),
-  libraryController.deleteLibraryItem
+  libraryController.deleteLibraryItem,
 );
 
 module.exports = router;

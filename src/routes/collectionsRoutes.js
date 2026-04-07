@@ -74,11 +74,7 @@ const {
  *       500:
  *         description: Server error
  */
-router.get(
-  '/', 
-  requireAuth, 
-  collectionsController.getAllCollections
-);
+router.get('/', requireAuth, collectionsController.getAllCollections);
 
 /**
  * @swagger
@@ -115,7 +111,7 @@ router.get(
   '/:id',
   requireAuth,
   validateObjectId('id'),
-  collectionsController.getCollectionById
+  collectionsController.getCollectionById,
 );
 
 /**
@@ -152,14 +148,16 @@ router.get(
  *               $ref: '#/components/schemas/Collection'
  *       401:
  *         description: Unauthorized
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */
 router.post(
-  '/', 
-  requireAuth, 
-  validateCollectionMiddleware(false), 
-  collectionsController.createCollection
+  '/',
+  requireAuth,
+  validateCollectionMiddleware(false),
+  collectionsController.createCollection,
 );
 
 /**
@@ -208,6 +206,8 @@ router.post(
  *         description: Unauthorized
  *       404:
  *         description: Collection not found
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */
@@ -216,7 +216,7 @@ router.put(
   requireAuth,
   validateObjectId('id'),
   validateCollectionMiddleware(true),
-  collectionsController.updateCollection
+  collectionsController.updateCollection,
 );
 
 /**
@@ -247,10 +247,10 @@ router.put(
  *         description: Server error
  */
 router.delete(
-  '/:id', 
-  requireAuth, 
+  '/:id',
+  requireAuth,
   validateObjectId('id'),
-  collectionsController.deleteCollection
+  collectionsController.deleteCollection,
 );
 
 /**
@@ -291,6 +291,8 @@ router.delete(
  *         description: Unauthorized
  *       404:
  *         description: Collection not found
+ *       422:
+ *         description: Validation failed
  *       500:
  *         description: Server error
  */
@@ -299,7 +301,7 @@ router.post(
   requireAuth,
   validateObjectId('id'),
   validateMediaIdBody,
-  collectionsController.addItemToCollection
+  collectionsController.addItemToCollection,
 );
 
 /**
@@ -345,7 +347,7 @@ router.delete(
   requireAuth,
   validateObjectId('id'),
   validateObjectId('mediaId'),
-  collectionsController.removeItemFromCollection
+  collectionsController.removeItemFromCollection,
 );
 
 module.exports = router;

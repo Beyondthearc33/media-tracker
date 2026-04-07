@@ -91,10 +91,7 @@ const {
  *       500:
  *         description: Server error
  */
-router.get(
-    '/', 
-    mediaController.getAllMedia
-);
+router.get('/', mediaController.getAllMedia);
 
 // GET a single media item by ID
 /**
@@ -124,11 +121,7 @@ router.get(
  *       500:
  *         description: Server error
  */
-router.get(
-  '/:id',
-  validateObjectId('id'),
-  mediaController.getMediaById
-);
+router.get('/:id', validateObjectId('id'), mediaController.getMediaById);
 
 // POST create a new media item
 /**
@@ -194,7 +187,7 @@ router.post(
   '/',
   requireAuth,
   validateMediaMiddleware(false),
-  mediaController.createMedia
+  mediaController.createMedia,
 );
 
 // PUT update a media item by ID
@@ -258,6 +251,8 @@ router.post(
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Media'
+ *       400:
+ *         description: Bad id format
  *       401:
  *         description: Unauthorized
  *       404:
@@ -272,7 +267,7 @@ router.put(
   requireAuth,
   validateObjectId('id'),
   validateMediaMiddleware(true),
-  mediaController.updateMedia
+  mediaController.updateMedia,
 );
 
 // DELETE a media item by ID
@@ -309,11 +304,6 @@ router.put(
  *       500:
  *         description: Server error
  */
-router.delete(
-  '/:id',
-  requireAuth,
-  validateObjectId('id'),
-  mediaController.deleteMedia
-);
+router.delete('/:id', requireAuth, validateObjectId('id'), mediaController.deleteMedia);
 
 module.exports = router;
