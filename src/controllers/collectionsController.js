@@ -8,7 +8,6 @@ if (!mongoose.Types.ObjectId.isValid(id)) {
   return res.status(400).json({ success: false, message: 'Invalid ID' });
 }
 
-
 /* ***************************
  * GET /api/collections
  * Return only collections that belong to the logged-in user
@@ -165,9 +164,9 @@ exports.addItemToCollection = async (req, res, next) => {
     );
 
     if (!mediaId) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'mediaId is required' 
+      return res.status(400).json({
+        success: false,
+        message: 'mediaId is required',
       });
     }
 

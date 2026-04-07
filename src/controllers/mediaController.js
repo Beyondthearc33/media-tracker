@@ -1,10 +1,7 @@
+/* *********************************
+ *  controllers/mediaController.js
+ * ********************************** */
 const Media = require('../models/Media');
-const { validateMediaMiddleware } = require('../validators/mediaValidator');
-const mongoose = require('mongoose');
-
-if (!mongoose.Types.ObjectId.isValid(id)) {
-  return res.status(400).json({ success: false, message: 'Invalid ID' });
-}
 
 /* ***************************
  * GET /api/media
@@ -46,12 +43,13 @@ exports.getMediaById = async (req, res, next) => {
  * *************************** */
 exports.createMedia = async (req, res, next) => {
   try {
-    if (req.body.mpaRating) {
-      req.body.mpaRating = req.body.mpaRating.toLowerCase();
+    const mediaData = { ...req.body };
+
+    if (mediaData.mpaRating) {
+      mediaData.mpaRating = mediaData.mpaRating.toLowerCase();
     }
 
-    const newMedia = new Media(req.body);
-
+    const newMedia = new Media(mediaData);
     const savedMedia = await newMedia.save();
 
     res.status(201).json(savedMedia);
@@ -65,26 +63,12 @@ exports.createMedia = async (req, res, next) => {
  * *************************** */
 exports.updateMedia = async (req, res, next) => {
   try {
-    if (req.body.mpaRating) {
-      req.body.mpaRating = req.body.mpaRating.toLowerCase();
-    }
-
     const { id } = req.params;
-
-    if (!req.body || Object.keys(req.body).length === 0) {
-      const errors = validateMediaMiddleware(true)(req, res, next);
-
-      if (errors.length > 0) {
-        return res.status(400).json({
-          success: false,
-          message: 'Validation failed',
-          errors,
-        });
-      }
-    }
-
-    // Build update object safely
     const updateData = { ...req.body };
+
+    if (updateData.mpaRating) {
+      updateData.mpaRating = updateData.mpaRating.toLowerCase();
+    }
 
     // Remove undefined fields
     Object.keys(updateData).forEach((key) => {
@@ -117,7 +101,7 @@ exports.updateMedia = async (req, res, next) => {
 exports.deleteMedia = async (req, res, next) => {
   try {
     const { id } = req.params;
-    
+
     const deletedMedia = await Media.findByIdAndDelete(id);
 
     if (!deletedMedia) {

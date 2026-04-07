@@ -25,6 +25,7 @@ const mediaSchema = new mongoose.Schema(
 
     duration: {
       type: Number,
+      min: 1,
       // Only required if it's a movie
       required: function () {
         return this.type === 'movie';
@@ -33,6 +34,7 @@ const mediaSchema = new mongoose.Schema(
 
     seasons: {
       type: Number,
+      min: 1,
       // Only required if it's a TV show
       required: function () {
         return this.type === 'tv';

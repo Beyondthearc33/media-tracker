@@ -76,11 +76,7 @@ const {
  *       500:
  *         description: Server error
  */
-router.get(
-    '/', 
-    requireAuth, 
-    libraryController.getAllLibraryItems
-);
+router.get('/', requireAuth, libraryController.getAllLibraryItems);
 
 // GET a single library item by ID
 /**
@@ -117,7 +113,7 @@ router.get(
   '/:id',
   requireAuth,
   validateObjectId('id'),
-  libraryController.getLibraryItemById
+  libraryController.getLibraryItemById,
 );
 
 // POST a new library item
@@ -168,7 +164,7 @@ router.post(
   '/',
   requireAuth,
   validateLibraryMiddleware(false),
-  libraryController.createLibraryItem
+  libraryController.createLibraryItem,
 );
 
 // PUT update a library item by ID
@@ -227,7 +223,7 @@ router.put(
   requireAuth,
   validateObjectId('id'),
   validateLibraryMiddleware(true),
-  libraryController.updateLibraryItem
+  libraryController.updateLibraryItem,
 );
 
 // DELETE a library item by ID
@@ -261,7 +257,7 @@ router.delete(
   '/:id',
   requireAuth,
   validateObjectId('id'),
-  libraryController.deleteLibraryItem
+  libraryController.deleteLibraryItem,
 );
 
 module.exports = router;

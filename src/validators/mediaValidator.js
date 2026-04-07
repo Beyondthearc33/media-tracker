@@ -4,7 +4,7 @@
 
 const mongoose = require('mongoose');
 
-const validateMedia = (data, isUpdate = false) => {
+const validateMedia = (data = {}, isUpdate = false) => {
   const errors = [];
 
   const validTypes = ['movie', 'tv'];
@@ -69,7 +69,7 @@ const validateMediaMiddleware = (isUpdate = false) => {
     const errors = validateMedia(req.body, isUpdate);
 
     if (errors.length > 0) {
-      return res.status(400).json({
+      return res.status(422).json({
         success: false,
         message: 'Validation failed',
         errors,
